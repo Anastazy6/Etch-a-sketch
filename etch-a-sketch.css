@@ -12,8 +12,8 @@ author {
 body {
     position: relative;
     min-height: 80%;
-    left: 10%;
-    right: 20%;
+    left: 6%;
+    right: 0%;
     top: 5%;
     bottom: 5%;
     background-color: ghostwhite;
@@ -28,8 +28,8 @@ body {
 }
 #container {
     background-color: white;
-    width: 1337px;
-    height: 1337px;
+    width: 800px;
+    height: 800px;
     position: relative;
     margin: auto;
     margin-top: 5%;
@@ -62,5 +62,14 @@ button {
 .row {
     display: block;
     margin-bottom: 0px;
-    margin-top: -5.35px;
+    margin-top: 0px;
+}
+
+#buttons {
+    position: relative;
+    left: 8%;
+}
+
+#gridResizer {
+    font-size: 0.94em;
 }

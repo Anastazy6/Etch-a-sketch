@@ -1,67 +1,87 @@
+/* 
+MAIN DOM ELEMENTS, BUTTONS, DIVS AND OTHER CRAP
+*/
+
 const container = document.getElementById("container");
+
 const gridResizer = document.getElementById("gridResizer");
+const gridWidthInput = document.getElementById("gridWidth");
+const gridHeightInput = document.getElementById("gridHeight"); 
+
+
 const colorPicker = document.getElementById("colorPicker");
-let chosenColor = "black"
-//let gridSize;       // JUST
-//let gridHeidght; // IN
-//let gridWidth;   // CASE 
+const colorChangingButton = document.getElementById("colorChangingButton"); // grants access to the color input if you click on the button surrounding it
+const opacity005 = document.getElementById("opacityPointZeroFive");
+const opacity01 = document.getElementById("opacityPointOne");
+const opacity025 = document.getElementById("opacityPointTwentyFive")
+const opacity05 = document.getElementById("opacityPointFive")
+const opacityMax = document.getElementById("opacityAllIn")
+
+
+
+
+/*
+RESIZING FUNCTIONS AND STUFF
+*/
 
 gridResizer.onclick = function(){
-    let potentialGridSize = parseInt(prompt("Please set the size of the grid. The number of rows will equal the number of colums for simplicity. Note that you have to type a natural number not greater than 64. Negatives and floats shall be automatically converted to natural numbers."))
-    if (isNaN(potentialGridSize)){          // it's meant to be as idiotproof as possible. No non-numeric values allowed. 
-         alert("It is not a number, mon!");
-         return
-    } 
-    almostReadyGridSize = Math.round(Math.abs(potentialGridSize));      // Makes it idiotproof: floats are rounded to integers, negatives have their sign changed.
-    if (almostReadyGridSize > 64) {
-        alert("Mae'n rhy fawr!");   // Dette betyr 'det er for stor'.
-        return
+    let gridWidth = gridWidthInput.value;
+    let gridHeight = gridHeightInput.value;
+    //
+    if (gridWidth < 1){
+        alert("Grid width is too small. Minimum is 1");
+    } else if (gridWidth > 64){
+        alert("Grid width is too big. Maximum is 64");
+    } else if (gridHeight < 1){
+        alert("Grid height is too small. Minimum is 1");
+    } else if (gridHeight > 64){
+        alert("Grid height is too big. Maximum is 64");
     } else {
-        let gridSize = almostReadyGridSize;
-        console.log(gridSize);
-        container.innerHTML = '';  // this is where resetting of the grid happens
-        return createGrid(gridSize)
+        container.innerHTML = "";
+        return createGrid(gridHeight, gridWidth)
     }
 }
 
-function createGrid(gridSize){      //replace gridSize with gridHeight to create non-square grids. It will need some adjustmets though.
+function createGrid(gridHeight, gridWidth){      
     let i = 0;
-    for (i; i < gridSize; i++){
-       const newRow =  createRow(gridSize);
+    for (i; i < gridHeight; i++){
+       const newRow =  createRow(gridHeight, gridWidth);
        container.appendChild(newRow);
     }
 }
 
-function createRow(gridSize) {      //replace gridSize woth gridWidth to create non-square grids
+function createRow(gridHeight, gridWidth) {      
     const row = document.createElement('div');
     row.classList.add('row');
+    row.style.height = (800 / gridHeight) + "px";
     let i = 0
-    for (i; i < gridSize; i++){
-        const newCell = createCell(gridSize);
+    for (i; i < gridWidth; i++){
+        const newCell = createCell(gridHeight, gridWidth);
         row.appendChild(newCell);
 }
+
     return row
 }
 
-function createCell(gridSize){    //USING GRID SIZE
+function createCell(gridHeight, gridWidth){    
     const cell = document.createElement('div');
     cell.classList.add('cell');
-
-    let cellWidth = (1337 / gridSize)
+    //
+    let cellWidth = (800 / gridWidth)
     cell.style.width = cellWidth + "px"
-    
-    let cellHeight = (1337 / gridSize) 
+    //
+    let cellHeight = (800 / gridHeight) 
     cell.style.height = cellHeight + "px"
-
+    //
     cell.style.backgroundColor = chosenColor;
     cell.style.opacity = "0"
-
+    //
     cell.addEventListener('mouseover', function(){
-        if (this.style.backgroundColor == chosenColor){
-        this.style.opacity = (this.style.opacity == 1) ? 1 : parseFloat(this.style.opacity) + 0.1;
+        if (this.style.backgroundColor === chosenColor){
+        this.style.opacity = (this.style.opacity == 1) ? 1 : (parseFloat(this.style.opacity) + chosenOpacity > 1) ? 1 : parseFloat(this.style.opacity) + chosenOpacity;
     } else {
         this.style.backgroundColor = chosenColor;
-        this.style.opacity = 0.1;
+        this.style.opacity = chosenOpacity;
     }
 }
     )
@@ -69,11 +89,46 @@ function createCell(gridSize){    //USING GRID SIZE
     return cell
 }
 
+/*
+COLOR FUNCTIONS AND STUFF
+*/
+let chosenOpacity = 0.1;
+let chosenColor = "black";
+
+colorChangingButton.onclick = document.getElementById("colorPicker").input;  // DOES NOT WORK YET
 
 colorPicker.addEventListener('input', function(){
-    chosenColor = colorPicker.value;
+    let chosenColorHex = colorPicker.value;
+    //
+    let hexRed = chosenColorHex.slice(1,3)
+    let hexGreen = chosenColorHex.slice(3,5)
+    let hexBlue = chosenColorHex.slice(5,7)
+
+    let decRed = parseInt(hexRed, 16);
+    let decGreen = parseInt(hexGreen, 16);
+    let decBlue = parseInt(hexBlue, 16);
+    //
+    chosenColor = `rgb(${decRed}, ${decGreen}, ${decBlue})`
 })
 
 
+opacity005.onclick = function(){
+    chosenOpacity = 0.05;
+}
+opacity01.onclick = function(){
+    chosenOpacity = 0.1;
+}
+opacity025.onclick = function(){
+    chosenOpacity = 0.25;
+}
+opacity05.onclick = function(){
+    chosenOpacity = 0.5;
+}
+opacityMax.onclick = function(){
+    chosenOpacity = 1;
+} 
 
-createGrid(16)
+
+
+
+createGrid(16,16)
