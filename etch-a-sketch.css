@@ -36,11 +36,6 @@ body {
 }
 
 
-
-
-
-
-
 #header {
     color: orangered;
     text-shadow: 0px 0px 5px aqua;
@@ -72,4 +67,19 @@ button {
 
 #gridResizer {
     font-size: 0.94em;
+}
+#cellShape {
+    width: 250px;
+}
+#colorRandomizer {
+    width: 250px;
+}
+
+.opacity{
+    width: 100px;
+}
+
+.opacityActive {
+    background-color: crimson;
+    color: ivory;
 }
