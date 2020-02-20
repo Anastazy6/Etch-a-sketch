@@ -70,7 +70,7 @@ function createGrid(gridHeight, gridWidth){
        const newRow =  createRow(gridHeight, gridWidth);
        container.appendChild(newRow);
     }
-    return console.log(`The grid is ${gridHeight} cells tall and ${gridWidth} cells wide.`)
+    return console.log(`The grid is ${gridHeight} cells tall and ${gridWidth} cells wide.`)  // optional
 }
 
 function createRow(gridHeight, gridWidth) {      
