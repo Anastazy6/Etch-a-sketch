@@ -11,7 +11,7 @@ const cellShapeButton = document.getElementById("cellShape");
 const colorRandomizer = document.getElementById("colorRandomizer");
 
 
-const colorPicker = document.getElementById("colorPicker");
+let colorPicker = document.getElementById("colorPicker");
 const colorChangingButton = document.getElementById("colorChangingButton"); // grants access to the color input if you click on the button surrounding it
 const opacity005 = document.getElementById("opacityPointZeroFive");
 const opacity01 = document.getElementById("opacityPointOne");
@@ -33,19 +33,11 @@ cellShapeButton.onclick = function(){
     if (this.textContent === "Cell type: rectangular"){
         this.textContent = "Cell type: square";
         cellShape = "square";
-        gridWidthInput.placeholder = "Grid size, max is 128";
-        gridHeightInput.type = "text";
-        lastGridHeightInputValue = gridHeightInput.value;
-        gridHeightInput.value = "";
-        gridHeightInput.placeholder = "IGNORED";
+        updateInputsForSquareGridzSake();
     } else if (this.textContent === "Cell type: square"){
         this.textContent = "Cell type: rectangular";
         cellShape = "rectangular";
-        gridWidthInput.placeholder = "Grid width, max is 128";
-        gridHeightInput.value = lastGridHeightInputValue;
-        gridHeightInput.placeholder = "grid height, max is 128";
-        gridHeightInput.type = "number";
-
+        updateInputsForRectangularGridzSake();
     }
 }
 
@@ -110,6 +102,7 @@ function createCell(gridHeight, gridWidth){
     let mouseClicked = false;   // Thanks to this stuff, drawing is only possible when the left mouse button is down.
     container.addEventListener('mousedown', function() {mouseClicked = true});  // Works almost as intended
     container.addEventListener('mouseup', function(){mouseClicked = false});    // This implementation is kinda retarded and feels clumsy while playing with the grid
+    // I haven't experienced any problems with this while playing with the site on my stationary PC, on Windows. On my laptop (virtual Xubuntu) it is, however, buggy.
 
     cell.addEventListener('mousedown', function(){      // Color handling when the mouse is clicked down (releasing it doesn't matter here)
         if (colorRandomizer.textContent === "Random colors: ON"){       // Color handling when you want random colors
@@ -156,11 +149,20 @@ let chosenOpacity = 0.1;
 let chosenColor = "black";
 
 colorChangingButton.onclick = function(){
-    (this.textContent === "IGNORED") ? console.log("Y U clic me :DDD")  : document.getElementById("colorPicker").click();
+    (this.textContent === "IGNORED") ? console.log("Y U clic me :DDD")  : colorPicker.click();
 
 }
 
-colorPicker.addEventListener('input', function(){
+function xd(){
+    /* My first implementation didn't have the 'xd' function. However, it is mandatory since I want to have the InnerHTML
+        of the colorChangingButton to be changed when you click on the colorRandomizer button and back when you click it again.
+        Changing the InnerHTML of the colorChangingButton to plain text "IGNORED" entirely removes the colorPicker input AND
+        it's event listener which updates chosenColor. Since we want the event listener to exist after transorming the colorChangingButton
+        back to it's original form, it's simply shorter to implement the event listener as a function, call if for the first time right below, and
+        call it every time the colorChangingButton goes back to it's original form. And I named the function 'xd' because reasons.
+
+    */
+    colorPicker.addEventListener('input', function(){
     let chosenColorHex = colorPicker.value;
     //
     let hexRed = chosenColorHex.slice(1,3);
@@ -172,7 +174,8 @@ colorPicker.addEventListener('input', function(){
     let decBlue = parseInt(hexBlue, 16);
     //
     chosenColor = `rgb(${decRed}, ${decGreen}, ${decBlue})`;
-})
+})}
+xd()    // First call of the 'xd' function. Basically adds the event listener to the colorPicker input.
 
 function randomizeColors(){
     function randInt_0_to_255(){
@@ -195,11 +198,14 @@ colorRandomizer.onclick = function(){
         this.textContent = "Random colors: ON";
         lastActiveOpacityForTheSakeOfTheColorRandomizingButtonFFS = document.querySelector(".opacityActive");
         opacityMax.click();
-        colorChangingButton.textContent = "IGNORED";
+        colorChangingButton.textContent = "IGNORED";    // Note this line removes the colorPicker AND it's event listener.
     } else if (this.textContent === "Random colors: ON"){
         this.textContent = "Random colors: OFF";
         lastActiveOpacityForTheSakeOfTheColorRandomizingButtonFFS.click();
         colorChangingButton.innerHTML = cCBinnerHtml;
+        colorPicker = document.getElementById("colorPicker");
+        xd(); // Repeatable call of the 'xd' function. Adds the goddamn event listener every time when the colorPicker is recreated
+        chosenColor = "black"
     } //closes else if
 }   //closes colorRandomizer.onclick
 
@@ -237,6 +243,22 @@ opacityMax.onclick = function(){
     this.classList.add("opacityActive");
 } 
 
+//  SOME STUFF CONCERNING UPDATING DOM ELEMENTS
+
+function updateInputsForSquareGridzSake(){
+    gridWidthInput.placeholder = "Grid size, max is 128";
+    gridHeightInput.type = "text";
+    lastGridHeightInputValue = gridHeightInput.value;
+    gridHeightInput.value = "";
+    gridHeightInput.placeholder = "IGNORED";
+}
+
+function updateInputsForRectangularGridzSake(){
+    gridWidthInput.placeholder = "Grid width, max is 128";
+    gridHeightInput.value = lastGridHeightInputValue;
+    gridHeightInput.placeholder = "grid height, max is 128";
+    gridHeightInput.type = "number";
+}
 
 
 
